@@ -12,6 +12,20 @@
 #include "json.h"
 
 int main(int argc, char *argv[]){
+	FILE *fpointer;
+	
+	fpointer = fopen("test01_good.txt", "r");
+	
+	if(fpointer == NULL) {
+		fprintf(stderr, "Error, could not open file.\n");
+		// Close file stream flush all buffers
+		fclose(fpointer);
+		exit(-1);
+		
+	} else {
+		json_read(fpointer);
+		
+	}
 	
 	return(0);
 } 

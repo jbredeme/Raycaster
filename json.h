@@ -5,9 +5,9 @@
  * File: json.h
  */
  
- #ifndef _json_h
- #define _json_h
+#ifndef _json_h
+#define _json_h
  
- void skip_whitespace(FILE *fpointer);
+void json_read(FILE *fpointer);
  
- #endif
+#endif
