@@ -13,4 +13,4 @@ json.o: json.c json.h
 	gcc -c json.c
 	
 clean:
-	rm #.o #.exe
+	rm *.o *.exe

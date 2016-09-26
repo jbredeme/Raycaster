@@ -128,7 +128,7 @@ char *get_string(FILE *fpointer){
 double get_double(FILE *fpointer){
 	 double dbl;
 	 
-	 if((fscanf(fpointer, "%f", dbl)) == 0) {
+	 if(fscanf(fpointer, "%lf", &dbl) == 0) {
 		fprintf(stderr, "Error, line number %d; expected numeric value.\n", line_num);
 		// Close file stream flush all buffers
 		fclose(fpointer);
@@ -154,7 +154,7 @@ double *get_vector(FILE *fpointer){
 	c = get_char(fpointer);
 	
 	if(c != '[') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '"');
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '[');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -169,7 +169,7 @@ double *get_vector(FILE *fpointer){
 	c = get_char(fpointer);
 	
 	if(c != ',') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '"');
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ',');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -184,7 +184,7 @@ double *get_vector(FILE *fpointer){
 	c = get_char(fpointer);
 	
 	if(c != ',') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '"');
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ',');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -195,45 +195,29 @@ double *get_vector(FILE *fpointer){
 	vector[2] = get_double(fpointer);
 	
 	skip_whitespace(fpointer);
+
+	c = get_char(fpointer);
+	
+	if(c != ']') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ']');
+		// Close file stream flush all buffers
+		fclose(fpointer);		
+		exit(-1);
+		
+	}		
 	
 	return vector;
  }
 
- 
+
 /**
  * read_object
  *	
  *
  */ 
  void read_object(FILE *fpointer) {
-	// Ignore any whitespace before the first character
-	skip_whitespace(fpointer);	 
-/*
-type: camera sphere plane
-color
-position
-radius
-camera
-width
-height
-normal
-*/
- }
- 
- 
-/**
- * json_read
- *	
- *
- */ 
-void json_read(FILE *fpointer) {
-	// ---------------------------------------- Parsing Object ----------------------------------------
-	char *name, *name_value;
-	char *type, *type_value;
+	char *name, *value;
 	int c;
-	
-	// Ignore any whitespace before the first character
-	skip_whitespace(fpointer);
 	
 	// Read in a character advance the stream position indicator
 	c = get_char(fpointer);
@@ -246,75 +230,92 @@ void json_read(FILE *fpointer) {
 		exit(-1);
 		
 	} else {
-		// Ignore any whitespaces after the opening brace
-		skip_whitespace(fpointer);	
+		skip_whitespace(fpointer);
+		// Read in a character advance the stream position indicator
+		c = get_char(fpointer);	
 		
-		// Read in a string value
-		name = get_string(fpointer);
-		
-		// First value read in should be TYPE
-		if(strcmp(name, "type") != 0) {
-			fprintf(stderr, "Error, line number %d; unexpected name \"%s\", expecting \"type\" in name/value pair.\n", line_num, name);
-			// Close file stream flush all buffers
-			fclose(fpointer);		
-			exit(-1);
-			
-		} else {
-			// Ignore any whitespace after the string TYPE
-			skip_whitespace(fpointer);
-			
-			// Read in a character advance the stream position indicator
-			c = get_char(fpointer);
-			
-			// Next value after TYPE should be a COLON:
-			if(c != ':') {
-				fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ':');
-				// Close file stream flush all buffers
-				fclose(fpointer);		
-				exit(-1);
-				
-			}
-			// Ignore any whitespace after the COLON:
-			skip_whitespace(fpointer);
-			
-			// Read in a string value
-			name = get_string(fpointer);
+		while(c != '}') {
 
-			// Next string read in should be a VALUE of type
-			if(strcmp(name, "camera") == 0){
-				printf("its a camera\n");
-				
+			if(c == '"') {
+				ungetc(c, fpointer);			
+			}
+			name = get_string(fpointer);
+			printf("%s ", name);
+			
+			if(strcmp(name, "type") == 0){
 				skip_whitespace(fpointer);
-				
-				// Read in character advance the stream position indicator
 				c = get_char(fpointer);
-				
-				if(c != ',') {
-					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ':');
-					// Close file stream flush all buffers
-					fclose(fpointer);		
-					exit(-1);
+				if(c != ':') {
+					// throw error
+				} else {
+					skip_whitespace(fpointer);
+					value = get_string(fpointer);
+					printf("%s\n", value);
+					skip_whitespace(fpointer);
+					printf("%c", get_char(fpointer));
+					skip_whitespace(fpointer);
 					
 				}
-
-				skip_whitespace(fpointer);	
 				
-				printf("%s\n", name = get_string(fpointer));
+			} else if(strcmp(name, "width") == 0) {
 				
-			} else if(strcmp(name, "sphere") == 0){
-				printf("its a sphere");
-			} else if(strcmp(name, "plane") == 0) {
-				printf("its a plane");
+			} else if(strcmp(name, "height") == 0) {
+				
+			} else if(strcmp(name, "color") == 0) {
+				skip_whitespace(fpointer);
+				c = get_char(fpointer);
+				if(c != ':') {
+					// Error
+				} else {
+					skip_whitespace(fpointer);
+					get_vector(fpointer);
+					printf("got vector!\n");
+					skip_whitespace(fpointer);
+					printf("%c", get_char(fpointer));
+					skip_whitespace(fpointer);					
+				}
+				
+			} else if(strcmp(name, "position") == 0) {
+				
+			} else if(strcmp(name, "radius") == 0) {
+				
+			} else if(strcmp(name, "normal") == 0) {
+				
 			} else {
-				fprintf(stderr, "Error, line number %d; unknown object type '%s'.\n", line_num, name);
-				// Close file stream flush all buffers
-				fclose(fpointer);		
-				exit(-1);
+				skip_whitespace(fpointer);
+			}
 				
-			}			
+
 			
+			
+			
+			
+
+			
+			
+			
+			
+			
+			c = get_char(fpointer);
 		}
 		
 	}
+
+ }
+ 
+ 
+/**
+ * json_read
+ *	
+ *
+ */ 
+void json_read(FILE *fpointer) {
+	//double *mydbl = get_double(fpointer);
+	//printf("%f\n", get_double(fpointer));
+	//double *mydbl = get_vector(fpointer);
+	//printf("%lf\n", mydbl[0]);
+	//printf("%lf\n", mydbl[1]);
+	//printf("%lf\n", mydbl[2]);
+	read_object(fpointer);
 
  }
