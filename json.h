@@ -8,6 +8,6 @@
 #ifndef _json_h
 #define _json_h
  
-void json_read(FILE *fpointer);
+void json_read_scene(FILE *fpointer);
  
 #endif

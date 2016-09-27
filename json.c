@@ -20,12 +20,12 @@ int line_num;
  *	encountered, prompt the user and throw and error and exit out of the program.
  */
 int get_char(FILE *fpointer) {
-	int c = getc(fpointer);
+	int token = getc(fpointer);
 	
-	if((c == '\n') || (c == '\r') || (c == '\f')) {
+	if((token == '\n') || (token == '\r') || (token == '\f')) {
 		line_num = line_num + 1;
 		
-	} else if(c == EOF) {
+	} else if(token == EOF) {
 		fprintf(stderr, "Error, line number %d; unexpected end-of-file.\n", line_num);
 		// Close file stream flush all buffers
 		fclose(fpointer);
@@ -33,7 +33,7 @@ int get_char(FILE *fpointer) {
 		
 	}
 	
-	return c;
+	return token;
 	
 } 
  
@@ -46,14 +46,14 @@ int get_char(FILE *fpointer) {
  *	encounters an EOF.
  */
 void skip_whitespace(FILE *fpointer) {
-	int c = get_char(fpointer);
+	int token = get_char(fpointer);
 	
-	while(isspace(c) != 0){
-		c = get_char(fpointer);
+	while(isspace(token) != 0){
+		token = get_char(fpointer);
 		
 	}
 	
-	ungetc(c, fpointer);
+	ungetc(token, fpointer);
 	
 }
 
@@ -66,21 +66,21 @@ void skip_whitespace(FILE *fpointer) {
  */
 char *get_string(FILE *fpointer){
 	char buffer[256];
-	int c, i = 0;
+	int token, i = 0;
 	// Read in character advance the stream position indicator
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
-	if(c != '"') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '"');
+	if(token != '"') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '"');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
 		
 	} else {
 		// Read in character advance the stream position indicator
-		c = get_char(fpointer);
+		token = get_char(fpointer);
 		
-		while(c != '"'){
+		while(token != '"'){
 			 // String exceeds the buffer size
 			if(i > 256) {
 				fprintf(stderr, "Error, line number %d; Strings with a length greater than 256 characters are not supported.\n", line_num);
@@ -90,7 +90,7 @@ char *get_string(FILE *fpointer){
 				
 			}
 			// String contains escape sequence code(s)
-			if(c == '\\') {
+			if(token == '\\') {
 				fprintf(stderr, "Error, line number %d; Strings with escape character codes are not supported.\n", line_num);
 				// Close file stream flush all buffers
 				fclose(fpointer);
@@ -98,7 +98,7 @@ char *get_string(FILE *fpointer){
 				
 			}
 			// String is not an ascii character
-			if((c < 32) || (c > 126)) {
+			if((token < 32) || (token > 126)) {
 				fprintf(stderr, "Error, line number %d; Strings can contain ascii characters only.\n", line_num);
 				// Close file stream flush all buffers
 				fclose(fpointer);
@@ -106,11 +106,11 @@ char *get_string(FILE *fpointer){
 				
 			}
 			// Add character to the buffer
-			buffer[i] = c;
+			buffer[i] = token;
 			i = i + 1;
 			
 			// Read in character advance the stream position indicator
-			c = get_char(fpointer);
+			token = get_char(fpointer);
 			 
 		}
 	}
@@ -149,12 +149,12 @@ double get_double(FILE *fpointer){
  */
 double *get_vector(FILE *fpointer){
 	double *vector = malloc(3 * sizeof(double));
-	int c;
+	int token;
 	
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
-	if(c != '[') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '[');
+	if(token != '[') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -166,10 +166,10 @@ double *get_vector(FILE *fpointer){
 	
 	skip_whitespace(fpointer);
 	
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
-	if(c != ',') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ',');
+	if(token != ',') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ',');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -181,10 +181,10 @@ double *get_vector(FILE *fpointer){
 	
 	skip_whitespace(fpointer);
 	
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
-	if(c != ',') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ',');
+	if(token != ',') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ',');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -196,10 +196,10 @@ double *get_vector(FILE *fpointer){
 	
 	skip_whitespace(fpointer);
 
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
-	if(c != ']') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, ']');
+	if(token != ']') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ']');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -217,14 +217,15 @@ double *get_vector(FILE *fpointer){
  */ 
  void read_object(FILE *fpointer) {
 	char *name, *value;
-	int c;
+	double *vector;
+	int token;
 	
 	// Read in a character advance the stream position indicator
-	c = get_char(fpointer);
+	token = get_char(fpointer);
 	
 	// Determine if the character read in is a valid begining of an object
-	if(c != '{') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, c, '{');
+	if(token != '{') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '{');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -232,71 +233,87 @@ double *get_vector(FILE *fpointer){
 	} else {
 		skip_whitespace(fpointer);
 		// Read in a character advance the stream position indicator
-		c = get_char(fpointer);	
+		token = get_char(fpointer);	
 		
-		while(c != '}') {
+		while(token != '}') {
+			if(token == '"') {
+				ungetc(token, fpointer);			
 
-			if(c == '"') {
-				ungetc(c, fpointer);			
 			}
+			
 			name = get_string(fpointer);
-			printf("%s ", name);
 			
 			if(strcmp(name, "type") == 0){
 				skip_whitespace(fpointer);
-				c = get_char(fpointer);
-				if(c != ':') {
-					// throw error
+				
+				token = get_char(fpointer);
+				
+				if(token != ':') {
+					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+					// Close file stream flush all buffers
+					fclose(fpointer);		
+					exit(-1);
+					
 				} else {
-					skip_whitespace(fpointer);
-					value = get_string(fpointer);
-					printf("%s\n", value);
-					skip_whitespace(fpointer);
-					printf("%c", get_char(fpointer));
 					skip_whitespace(fpointer);
 					
+					value = get_string(fpointer);
+					printf("%s : %s\n", name, value);
+					
 				}
-				
-			} else if(strcmp(name, "width") == 0) {
-				
-			} else if(strcmp(name, "height") == 0) {
-				
-			} else if(strcmp(name, "color") == 0) {
+	   
+			} else if((strcmp(name, "width") == 0) ||
+				      (strcmp(name, "height") == 0) ||
+				      (strcmp(name, "radius") == 0)) {
 				skip_whitespace(fpointer);
-				c = get_char(fpointer);
-				if(c != ':') {
-					// Error
+				
+				token = get_char(fpointer);
+
+				if(token != ':') {
+					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+					// Close file stream flush all buffers
+					fclose(fpointer);		
+					exit(-1);
+					
 				} else {
 					skip_whitespace(fpointer);
-					get_vector(fpointer);
-					printf("got vector!\n");
-					skip_whitespace(fpointer);
-					printf("%c", get_char(fpointer));
-					skip_whitespace(fpointer);					
-				}
-				
-			} else if(strcmp(name, "position") == 0) {
-				
-			} else if(strcmp(name, "radius") == 0) {
-				
-			} else if(strcmp(name, "normal") == 0) {
-				
-			} else {
+					printf("%s : %lf\n", name, get_double(fpointer));
+					
+				}					   
+					   
+			} else if((strcmp(name, "color") == 0) ||
+					 (strcmp(name, "position") == 0) ||
+					 (strcmp(name, "normal") == 0)) {
 				skip_whitespace(fpointer);
+
+				token = get_char(fpointer);
+
+				if(token != ':') {
+					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+					// Close file stream flush all buffers
+					fclose(fpointer);		
+					exit(-1);
+					
+				} else {
+					skip_whitespace(fpointer);
+					
+					vector = get_vector(fpointer);
+					printf("%s : %lf %lf %lf\n", name, vector[0], vector[1], vector[2]);
+					
+				}								 
+			   
 			}
+			
+			skip_whitespace(fpointer);
+			token = get_char(fpointer);
+			//printf("what I see at the end 01: %c\n", token);
+			if(token == ',') {
+				skip_whitespace(fpointer);
+				token = get_char(fpointer);
+				//printf("what I see at the end 02: %c\n", token);
 				
-
+			}
 			
-			
-			
-			
-
-			
-			
-			
-			
-			
-			c = get_char(fpointer);
 		}
 		
 	}
@@ -305,17 +322,37 @@ double *get_vector(FILE *fpointer){
  
  
 /**
- * json_read
+ * json_read_scene
  *	
  *
  */ 
-void json_read(FILE *fpointer) {
-	//double *mydbl = get_double(fpointer);
-	//printf("%f\n", get_double(fpointer));
-	//double *mydbl = get_vector(fpointer);
-	//printf("%lf\n", mydbl[0]);
-	//printf("%lf\n", mydbl[1]);
-	//printf("%lf\n", mydbl[2]);
-	read_object(fpointer);
+void json_read_scene(FILE *fpointer) {
+	int token;
+	
+	skip_whitespace(fpointer);
+	token = get_char(fpointer);
+	
+	if(token != '[') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
+		// Close file stream flush all buffers
+		fclose(fpointer);		
+		exit(-1);			
+	} else {
+		while(token != ']') {
+			skip_whitespace(fpointer);
+			read_object(fpointer);
+			
+			skip_whitespace(fpointer);
+			token = get_char(fpointer);
+			if(token == '{') {
+				ungetc(token, fpointer);
+			}
 
- }
+		}
+
+	}
+	
+	
+
+
+}

@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
 		exit(-1);
 		
 	} else {
-		json_read(fpointer);
+		json_read_scene(fpointer);
 		
 	}
 	
