@@ -122,8 +122,8 @@ char *get_string(FILE *fpointer){
  
 /**
  * get_double
- *	
- *
+ *	Reads in a double precsion floating point number, if none are found throws error
+ *  exits the program.
  */
 double get_double(FILE *fpointer){
 	 double dbl;
@@ -144,11 +144,13 @@ double get_double(FILE *fpointer){
  
 /**
  * get_vector
- *	
- *
+ *	Reads in an array with the format pattern [x, y, z] and parses into an array of	
+ *  doubles. Returns a pointer to the new array to the function call.
  */
 double *get_vector(FILE *fpointer){
+	// Allocate memory for vector array of doubles
 	double *vector = malloc(3 * sizeof(double));
+
 	int token;
 	
 	token = get_char(fpointer);
@@ -212,21 +214,25 @@ double *get_vector(FILE *fpointer){
 
  /**
  * json_read_scene
- *	
+ *	Reads in a scene of objects formatted using json. [... ] delimit a scene where {... }
+ *  delimit objects within that scene. Ignores comments seperating objects with in a scene
+ *  Accepts empty scenes, empty objects. Returns the number of objects read in from the scene
  *
  */ 
-void json_read_scene(FILE *fpointer, Object objects[]) {
+int json_read_scene(FILE *fpointer, Object objects[]) {
 	int token;
 	int index;
-	index = 0;
-	
 	char *name, *value;
 	double *vector;
 	
+	index = 0;
+	
+	// Skip whitespace(s) read in the first character
 	skip_whitespace(fpointer);
+	// Read in a character and advance the stream position indicator
 	token = get_char(fpointer);
-
-
+	
+	// Check to see of the first character is a brace denoting the start of a scene
 	if(token != '[') {
 		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
 		// Close file stream flush all buffers
@@ -234,10 +240,20 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 		exit(-1);
 		
 	} else {
+		// Check for an empty scene - no objects
+		skip_whitespace(fpointer);
+		// Read in a character and advance the stream position indicator
+		token = get_char(fpointer);
+		
+		if(token != ']') {
+			ungetc(token, fpointer);
+			
+		}
+		// Loop through the scene until a closing brace is encountered
 		while(token != ']') {
 			skip_whitespace(fpointer);
-			//***********************************************************************************************************************************************************
-			// Read in a character advance the stream position indicator
+		
+			// Read in a character and advance the stream position indicator
 			token = get_char(fpointer);
 			
 			// Determine if the character read in is a valid begining of an object
@@ -248,12 +264,12 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 				exit(-1);
 				
 			} else {
-				//objects[index] = malloc(sizeof(Object));
 				skip_whitespace(fpointer);
 				// Read in a character advance the stream position indicator
 				token = get_char(fpointer);	
 				
 				while(token != '}') {
+					// If the next character is a '"' which means a string move indicator back one position then read in the string
 					if(token == '"') {
 						ungetc(token, fpointer);			
 
@@ -263,7 +279,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 					
 					if(strcmp(name, "type") == 0){
 						skip_whitespace(fpointer);
-						
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 						
 						if(token != ':') {
@@ -295,7 +311,6 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 							
 						} else {
 							skip_whitespace(fpointer);
-
 							objects[index].properties.camera.width = get_double(fpointer);
 							//printf("From json.c %s: %lf\n", name, objects[index].properties.camera.width);
 							//printf("%s : %lf\n", name, get_double(fpointer));
@@ -304,7 +319,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 						
 					} else if(strcmp(name, "height") == 0) {
 						skip_whitespace(fpointer);
-						
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 
 						if(token != ':') {
@@ -324,7 +339,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 						
 					} else if(strcmp(name, "radius") == 0) {
 						skip_whitespace(fpointer);
-						
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 
 						if(token != ':') {
@@ -344,7 +359,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 					
 					} else if(strcmp(name, "color") == 0) {
 						skip_whitespace(fpointer);
-
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 
 						if(token != ':') {
@@ -379,7 +394,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 						
 					} else if(strcmp(name, "position") == 0) {
 						skip_whitespace(fpointer);
-
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 
 						if(token != ':') {
@@ -414,7 +429,7 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 						
 					} else if(strcmp(name, "normal") == 0) {
 						skip_whitespace(fpointer);
-
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
 
 						if(token != ':') {
@@ -445,35 +460,48 @@ void json_read_scene(FILE *fpointer, Object objects[]) {
 					}
 					
 					skip_whitespace(fpointer);
+					// Read in a character and advance the stream position indicator	
 					token = get_char(fpointer);
-					//printf("what I see at the end 01: %c\n", token);
+					
 					if(token == ',') {
 						skip_whitespace(fpointer);
+						// Read in a character and advance the stream position indicator
 						token = get_char(fpointer);
-						//printf("what I see at the end 02: %c\n", token);
 						
 					}
 					
-				
 				}
 				
 			}
-			//***********************************************************************************************************************************************************
+			
 			skip_whitespace(fpointer);
+			// Read in a character and advance the stream position indicator
 			token = get_char(fpointer);
 			
+			printf("Last item %c:\n", token);
 			if(token == '{') {
 				ungetc(token, fpointer);
 				
 			}
 			
-			//printf("type from main: %s\n", objects[index]->type);
-			//printf("type from main: %s\n", objects[index]->width);
-			//printf("type from main: %s\n", objects[index]->height);
+			if(token == ',') {
+				skip_whitespace(fpointer);
+				// Read in a character and advance the stream position indicator
+				token = get_char(fpointer);
+				
+				if(token == '{') {
+					ungetc(token, fpointer);
+					
+				}				
+				
+			}			
+			// Increment array index counter
 			index = index + 1;
 			
-		}
+		} // End of while loop
 
 	}
+	// Return the total number of objects read-in from the scene
+	return index;
 
 }

@@ -39,6 +39,6 @@ typedef struct Object {
 
 } Object;
 
-void json_read_scene(FILE *fpointer, Object objects[]);
+int json_read_scene(FILE *fpointer, Object objects[]);
  
 #endif

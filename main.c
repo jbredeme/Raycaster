@@ -15,6 +15,7 @@ Object objects[128];
 
 int main(int argc, char *argv[]){
 	FILE *fpointer;
+	int num_objects;
 
 	fpointer = fopen("test01_good.txt", "r");
 		
@@ -25,9 +26,12 @@ int main(int argc, char *argv[]){
 		exit(-1);
 		
 	} else {
-		json_read_scene(fpointer, objects);
+		num_objects = json_read_scene(fpointer, objects);
 		
 	}
+	printf("Number of objects in the scene are: %d\n\n", num_objects);	
+	
+	
 	
 	printf("type call from main type: %s\n", objects[0].type);
 	printf("type call from main width: %lf\n", objects[0].properties.camera.width);
