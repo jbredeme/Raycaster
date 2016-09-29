@@ -210,149 +210,270 @@ double *get_vector(FILE *fpointer){
  }
 
 
-/**
- * read_object
+ /**
+ * json_read_scene
  *	
  *
  */ 
- void read_object(FILE *fpointer) {
+void json_read_scene(FILE *fpointer, Object objects[]) {
+	int token;
+	int index;
+	index = 0;
+	
 	char *name, *value;
 	double *vector;
-	int token;
 	
-	// Read in a character advance the stream position indicator
+	skip_whitespace(fpointer);
 	token = get_char(fpointer);
-	
-	// Determine if the character read in is a valid begining of an object
-	if(token != '{') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '{');
+
+
+	if(token != '[') {
+		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
 		
 	} else {
-		skip_whitespace(fpointer);
-		// Read in a character advance the stream position indicator
-		token = get_char(fpointer);	
-		
-		while(token != '}') {
-			if(token == '"') {
-				ungetc(token, fpointer);			
-
-			}
-			
-			name = get_string(fpointer);
-			
-			if(strcmp(name, "type") == 0){
-				skip_whitespace(fpointer);
-				
-				token = get_char(fpointer);
-				
-				if(token != ':') {
-					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
-					// Close file stream flush all buffers
-					fclose(fpointer);		
-					exit(-1);
-					
-				} else {
-					skip_whitespace(fpointer);
-					
-					value = get_string(fpointer);
-					printf("%s : %s\n", name, value);
-					
-				}
-	   
-			} else if((strcmp(name, "width") == 0) ||
-				      (strcmp(name, "height") == 0) ||
-				      (strcmp(name, "radius") == 0)) {
-				skip_whitespace(fpointer);
-				
-				token = get_char(fpointer);
-
-				if(token != ':') {
-					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
-					// Close file stream flush all buffers
-					fclose(fpointer);		
-					exit(-1);
-					
-				} else {
-					skip_whitespace(fpointer);
-					printf("%s : %lf\n", name, get_double(fpointer));
-					
-				}					   
-					   
-			} else if((strcmp(name, "color") == 0) ||
-					 (strcmp(name, "position") == 0) ||
-					 (strcmp(name, "normal") == 0)) {
-				skip_whitespace(fpointer);
-
-				token = get_char(fpointer);
-
-				if(token != ':') {
-					fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
-					// Close file stream flush all buffers
-					fclose(fpointer);		
-					exit(-1);
-					
-				} else {
-					skip_whitespace(fpointer);
-					
-					vector = get_vector(fpointer);
-					printf("%s : %lf %lf %lf\n", name, vector[0], vector[1], vector[2]);
-					
-				}								 
-			   
-			}
-			
-			skip_whitespace(fpointer);
-			token = get_char(fpointer);
-			//printf("what I see at the end 01: %c\n", token);
-			if(token == ',') {
-				skip_whitespace(fpointer);
-				token = get_char(fpointer);
-				//printf("what I see at the end 02: %c\n", token);
-				
-			}
-			
-		}
-		
-	}
-
- }
- 
- 
-/**
- * json_read_scene
- *	
- *
- */ 
-void json_read_scene(FILE *fpointer) {
-	int token;
-	
-	skip_whitespace(fpointer);
-	token = get_char(fpointer);
-	
-	if(token != '[') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
-		// Close file stream flush all buffers
-		fclose(fpointer);		
-		exit(-1);			
-	} else {
 		while(token != ']') {
 			skip_whitespace(fpointer);
-			read_object(fpointer);
+			//***********************************************************************************************************************************************************
+			// Read in a character advance the stream position indicator
+			token = get_char(fpointer);
 			
+			// Determine if the character read in is a valid begining of an object
+			if(token != '{') {
+				fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '{');
+				// Close file stream flush all buffers
+				fclose(fpointer);		
+				exit(-1);
+				
+			} else {
+				//objects[index] = malloc(sizeof(Object));
+				skip_whitespace(fpointer);
+				// Read in a character advance the stream position indicator
+				token = get_char(fpointer);	
+				
+				while(token != '}') {
+					if(token == '"') {
+						ungetc(token, fpointer);			
+
+					}
+					
+					name = get_string(fpointer);
+					
+					if(strcmp(name, "type") == 0){
+						skip_whitespace(fpointer);
+						
+						token = get_char(fpointer);
+						
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+							
+							value = get_string(fpointer);
+							objects[index].type = value;
+							//printf("From json.c %s: %s - index %d\n", name, objects[index].type, index);
+							//printf("%s : %s\n", name, value);
+							
+						}
+			   
+					} else if(strcmp(name, "width") == 0) {
+						skip_whitespace(fpointer);
+						
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+
+							objects[index].properties.camera.width = get_double(fpointer);
+							//printf("From json.c %s: %lf\n", name, objects[index].properties.camera.width);
+							//printf("%s : %lf\n", name, get_double(fpointer));
+							
+						}
+						
+					} else if(strcmp(name, "height") == 0) {
+						skip_whitespace(fpointer);
+						
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+
+							objects[index].properties.camera.height = get_double(fpointer);
+							//printf("From json.c %s: %lf\n", name, objects[index].properties.camera.height);
+							//printf("%s : %lf\n", name, get_double(fpointer));
+							
+						}
+						
+					} else if(strcmp(name, "radius") == 0) {
+						skip_whitespace(fpointer);
+						
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+							
+							objects[index].properties.sphere.radius = get_double(fpointer);
+							//printf("From json.c %s: %lf\n", name, objects[index].properties.sphere.radius);
+							//printf("%s : %lf\n", name, get_double(fpointer));
+							
+						}
+					
+					} else if(strcmp(name, "color") == 0) {
+						skip_whitespace(fpointer);
+
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+							
+							vector = get_vector(fpointer);
+							
+							if(strcmp(objects[index].type, "sphere") == 0) {
+								objects[index].properties.sphere.color[0] = vector[0];
+								objects[index].properties.sphere.color[1] = vector[1];
+								objects[index].properties.sphere.color[2] = vector[2];
+								
+								//printf("%s color: %lf %lf %lf\n", objects[index].type, objects[index].properties.sphere.color[0], objects[index].properties.sphere.color[1], objects[index].properties.sphere.color[2]);								
+								
+							} else if(strcmp(objects[index].type, "plane") == 0) {
+								objects[index].properties.plane.color[0] = vector[0];
+								objects[index].properties.plane.color[1] = vector[1];
+								objects[index].properties.plane.color[2] = vector[2];
+								
+								//printf("%s color: %lf %lf %lf\n", objects[index].type, objects[index].properties.plane.color[0], objects[index].properties.plane.color[1], objects[index].properties.plane.color[2]);
+								
+							}
+							//printf("%s : %lf %lf %lf\n", name,  vector[0], vector[1], vector[2]);
+							
+						}				
+						
+					} else if(strcmp(name, "position") == 0) {
+						skip_whitespace(fpointer);
+
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+							
+							vector = get_vector(fpointer);
+							
+							if(strcmp(objects[index].type, "sphere") == 0) {
+								objects[index].properties.sphere.position[0] = vector[0];
+								objects[index].properties.sphere.position[1] = vector[1];
+								objects[index].properties.sphere.position[2] = vector[2];
+								
+								//printf("%s position: %lf %lf %lf\n", objects[index].type, objects[index].properties.sphere.position[0], objects[index].properties.sphere.position[1], objects[index].properties.sphere.position[2]);								
+								
+							} else if(strcmp(objects[index].type, "plane") == 0) {
+								objects[index].properties.plane.position[0] = vector[0];
+								objects[index].properties.plane.position[1] = vector[1];
+								objects[index].properties.plane.position[2] = vector[2];
+								
+								//printf("%s position: %lf %lf %lf\n", objects[index].type, objects[index].properties.plane.position[0], objects[index].properties.plane.position[1], objects[index].properties.plane.position[2]);
+								
+							}	
+							//printf("%s : %lf %lf %lf\n", name,  vector[0], vector[1], vector[2]);
+							
+						}				
+						
+					} else if(strcmp(name, "normal") == 0) {
+						skip_whitespace(fpointer);
+
+						token = get_char(fpointer);
+
+						if(token != ':') {
+							fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ':');
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							skip_whitespace(fpointer);
+							
+							vector = get_vector(fpointer);
+							
+							objects[index].properties.plane.normal[0] = vector[0];
+							objects[index].properties.plane.normal[1] = vector[1];
+							objects[index].properties.plane.normal[2] = vector[2];
+								
+							//printf("%s normal: %lf %lf %lf\n", objects[index].type, objects[index].properties.plane.normal[0], objects[index].properties.plane.normal[1], objects[index].properties.plane.normal[2]);	
+							//printf("%s : %lf %lf %lf\n", name,  vector[0], vector[1], vector[2]);
+							
+						}	 
+					   
+					} else {
+						fprintf(stderr, "Error, line number %d; invalid type '%s'.\n", name);
+						// Close file stream flush all buffers
+						fclose(fpointer);		
+						exit(-1);				
+					}
+					
+					skip_whitespace(fpointer);
+					token = get_char(fpointer);
+					//printf("what I see at the end 01: %c\n", token);
+					if(token == ',') {
+						skip_whitespace(fpointer);
+						token = get_char(fpointer);
+						//printf("what I see at the end 02: %c\n", token);
+						
+					}
+					
+				
+				}
+				
+			}
+			//***********************************************************************************************************************************************************
 			skip_whitespace(fpointer);
 			token = get_char(fpointer);
+			
 			if(token == '{') {
 				ungetc(token, fpointer);
+				
 			}
-
+			
+			//printf("type from main: %s\n", objects[index]->type);
+			//printf("type from main: %s\n", objects[index]->width);
+			//printf("type from main: %s\n", objects[index]->height);
+			index = index + 1;
+			
 		}
 
 	}
-	
-	
-
 
 }
