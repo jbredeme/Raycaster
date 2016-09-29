@@ -478,7 +478,6 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 			// Read in a character and advance the stream position indicator
 			token = get_char(fpointer);
 			
-			printf("Last item %c:\n", token);
 			if(token == '{') {
 				ungetc(token, fpointer);
 				

@@ -29,26 +29,32 @@ int main(int argc, char *argv[]){
 		num_objects = json_read_scene(fpointer, objects);
 		
 	}
-	printf("Number of objects in the scene are: %d\n\n", num_objects);	
 	
+	// Check json read in
+	int i;
 	
-	
-	printf("type call from main type: %s\n", objects[0].type);
-	printf("type call from main width: %lf\n", objects[0].properties.camera.width);
-	printf("type call from main height: %lf\n\n", objects[0].properties.camera.height);
-	
-	printf("type call from main type: %s\n", objects[1].type);
-	printf("type call from main radius: %lf\n", objects[1].properties.sphere.radius);
-	
-	printf("type call from main color: %lf", objects[1].properties.sphere.color[0]);
-	printf(" %lf", objects[1].properties.sphere.color[1]);
-	printf(" %lf\n", objects[1].properties.sphere.color[2]);
-	
-	printf("type call from main position: %lf", objects[1].properties.sphere.position[0]);
-	printf(" %lf", objects[1].properties.sphere.position[1]);
-	printf(" %lf\n", objects[1].properties.sphere.position[2]);	
-
-
+	for(i = 0; i < num_objects; i++) {
+		if(strcmp(objects[i].type, "camera") == 0){
+			printf("Type: %s\n", objects[i].type);
+			printf("Width: %lf\n", objects[i].properties.camera.width);
+			printf("Height: %lf\n\n", objects[i].properties.camera.height);
+		}
+		
+		if(strcmp(objects[i].type, "sphere") == 0){
+			printf("Type: %s\n", objects[i].type);
+			printf("Radius: %lf\n", objects[i].properties.sphere.radius);
+			printf("Color: %lf %lf %lf\n", objects[i].properties.sphere.color[0], objects[i].properties.sphere.color[1], objects[i].properties.sphere.color[2]);
+			printf("Position: %lf %lf %lf\n\n", objects[i].properties.sphere.position[0], objects[i].properties.sphere.position[1], objects[i].properties.sphere.position[2]);
+			
+		}
+		
+		if(strcmp(objects[i].type, "plane") == 0){
+			printf("Type: %s\n", objects[i].type);
+			printf("Color: %lf %lf %lf\n", objects[i].properties.plane.color[0], objects[i].properties.plane.color[1], objects[i].properties.plane.color[2]);
+			printf("Position: %lf %lf %lf\n", objects[i].properties.plane.position[0], objects[i].properties.plane.position[1], objects[i].properties.plane.position[2]);
+			printf("Normal: %lf %lf %lf\n\n", objects[i].properties.plane.normal[0], objects[i].properties.plane.normal[1], objects[i].properties.plane.normal[2]);			
+		}
+	}
 
 	return(0);
 	
