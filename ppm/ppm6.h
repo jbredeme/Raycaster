@@ -31,5 +31,8 @@ typedef struct Image {
 
 } Image;
 
+void read_image(char *filename, Image *image);
+void write_p6_image(char *filename, Image *image);
+void write_p3_image(char *filename, Image *image);
  
 #endif
