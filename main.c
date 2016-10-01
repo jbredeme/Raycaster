@@ -20,6 +20,9 @@ Object objects[128];
 int main(int argc, char *argv[]){
 	FILE *fpointer;
 	int num_objects;
+	
+	Image *ppm_image;
+	ppm_image = (Image *)malloc(sizeof(Image));
 
 	fpointer = fopen("test01_good.json", "r");
 		
@@ -31,6 +34,7 @@ int main(int argc, char *argv[]){
 		
 	} else {
 		num_objects = json_read_scene(fpointer, objects);
+		write_p6_image("ppm6.ppm", raycaster(objects, ppm_image, 600, 600, num_objects));
 		
 	}
 	

@@ -4,12 +4,14 @@
 	"width": 0.5,
 	"height": 0.5,
 	},
+	
 	{
 	"type": "sphere"
-	"color": [1.0,9, 5],
+	"color": [0, 0, 0],
 	"radius": 2,
 	"position": [0, 2, 5],
 	}
+	
 	{
 	"type": "plane",
 	"color": [5, 9, 1.0],
