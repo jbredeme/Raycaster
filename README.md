@@ -10,9 +10,6 @@ was the simplistic port into this application.
 
 raycast width height input.json output.ppm
 
-## Error Checking Check List
-TODO
-
 ## Resources
 
 * Scratchapixel [Ray-Plane Intersection] 

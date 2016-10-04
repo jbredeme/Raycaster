@@ -9,6 +9,6 @@
 #ifndef _raycaster_h
 #define _raycaster_h
 
-Image* raycaster(Object objects[], Image *image, int num_objects, int maximum_color);
+Image* raycaster(Object objects[], Image *image, int num_objects);
  
 #endif

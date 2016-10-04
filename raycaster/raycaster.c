@@ -15,7 +15,6 @@
 #include "..\json\json.h"
 #include "raycaster.h"
 
-
 /**
  * sqr
  *
@@ -181,7 +180,7 @@ double plane_intersection(double *ro, double *rd, double *pos, double *normal){
  * intersections, colors pixels related to the object data, and stores the collection of information
  * into an image data buffer to be written using a ppm write function.
  */
-Image* raycaster(Object objects[], Image *image, int num_objects, int maximum_color) {
+Image* raycaster(Object objects[], Image *image, int num_objects) {
 	double pixel_height, pixel_width;
 	double cx, cy;
 	double h, w;
@@ -260,23 +259,23 @@ Image* raycaster(Object objects[], Image *image, int num_objects, int maximum_co
 			if((best_t > 0) && (best_t != INFINITY)){
 				
 				if(strcmp(objects[best_obj].type, "sphere") == 0) {
-					red = objects[best_obj].properties.sphere.color[0] * maximum_color;
+					red = objects[best_obj].properties.sphere.color[0] * (image->max_color);
 					image->image_data[row * image->width + column].red = red;
 					
-					green = objects[best_obj].properties.sphere.color[1] * maximum_color;
+					green = objects[best_obj].properties.sphere.color[1] * (image->max_color);
 					image->image_data[row * image->width + column].green = green;
 					
-					blue = objects[best_obj].properties.sphere.color[2] * maximum_color;
+					blue = objects[best_obj].properties.sphere.color[2] * (image->max_color);
 					image->image_data[row * image->width + column].blue = blue;
 				
 				} else if(strcmp(objects[best_obj].type, "plane") == 0){
-					red = objects[best_obj].properties.plane.color[0] * maximum_color;
+					red = objects[best_obj].properties.plane.color[0] * (image->max_color);
 					image->image_data[row * image->width + column].red = red;
 					
-					green = objects[best_obj].properties.plane.color[1] * maximum_color;
+					green = objects[best_obj].properties.plane.color[1] * (image->max_color);
 					image->image_data[row * image->width + column].green = green;
 					
-					blue = objects[best_obj].properties.plane.color[2] * maximum_color;
+					blue = objects[best_obj].properties.plane.color[2] * (image->max_color);
 					image->image_data[row * image->width + column].blue = blue;				
 				}
 				
