@@ -41,6 +41,11 @@ typedef struct Object {
 
 } Object;
 
+typedef struct Boolean {
+	int value;
+	
+} Boolean;
+
 int json_read_scene(FILE *fpointer, Object objects[]);
  
 #endif

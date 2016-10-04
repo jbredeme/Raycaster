@@ -88,7 +88,7 @@ int main(int argc, char *argv[]){
 			
 		} else {
 			// Raycast scene, write out to ppm6 image
-			write_p6_image(argv[4], raycaster(objects, ppm_image, num_objects));
+			write_p6_image(argv[4], raycaster(objects, ppm_image, num_objects, maximum_color));
 			
 			// Display json objects read in, valid for camera, sphere, and plane
 			printf("\n- NUMBER OF OBJECTS: %d -\n\n", num_objects);
