@@ -1,15 +1,34 @@
 # Simple Raycaster
 
-This program reads in a collection of objects (scene) formatted using JSON (JavaScript Object Notation). These mathematical 
-primitives, sphere(s) and plane(s) are loaded into memory, where I preform a simple ray interection test to determine if the
-object is in the view plane and assign that pixel the color of the intersecting object. Finally this image data is written out
-in portable pixmap format (PPM). I decided on using p6 format as the write functionality I implemented in my previous project
-was the simplistic port into this application.
+This program reads in a collection of objects written to a scene that are formatted using JSON (JavaScript Object Notation). These objects consisting of mathematical primitives, sphere(s) and plane(s) that are read into system memory where vector (ray) intersections calculations are made in order to detect an object's location in 3D space. This intersect data is stored into an image buffer and written to a P6 portable pixmap format (PPM) for viewing.
 
 ## Usage
-
+```c
 raycast width height input.json output.ppm
+```
 
+## Example json scene data
+```javascript
+[
+ {
+    "type": "camera",
+    "width": 1,
+    "height": 1
+ },
+ {
+    "type": "sphere",
+    "color": [1, 0, 0],
+    "position": [1, 1, 10],
+    "radius": 2
+ },
+ {
+    "type": "plane",
+    "color": [0, 1, 0],
+    "position": [0, -1, 0],
+    "normal": [0, 1, 0]
+ }
+]
+```
 ## Resources
 
 * Scratchapixel [Ray-Plane Intersection] 
