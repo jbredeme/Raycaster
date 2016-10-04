@@ -186,7 +186,7 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 	double h, w;
 	double t, best_t;
 	double red, green, blue;
-	int row, column, index, best_obj;
+	int row, column, index, t_object;
 	double rd[3];
 
 	// Set ray orgin
@@ -214,25 +214,25 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 		pixel_width = w / (image->width);
 		
 		//printf("index: %d\n", index);
-		//printf("h is: %lf\n", h);
-		//printf("w is: %lf\n", w);
-		//printf("Pixel height is: %lf\n", pixel_height);
-		//printf("Pixel width is: %lf\n", pixel_width);		
+		//printf("h: %lf\n", h);
+		//printf("w: %lf\n", w);
+		//printf("Pixel height: %lf\n", pixel_height);
+		//printf("Pixel width: %lf\n", pixel_width);		
 	}
-	
-	for (row = (image->height); row >= 0; row--) {
+
+	for(row = 0; row < (image->height); row++) {
 		
-		for (column = 0; column < (image->width); column++) {
+		for(column = 0; column < (image->width); column++) {
 	
 			rd[0] = (cx - (w / 2.0) + pixel_width * (column + 0.5));
-			rd[1] = (cy - (h / 2.0) + pixel_height * (row + 0.5));
+			rd[1] = - 1 * (cy - (h / 2.0) + pixel_height * (row + 0.5));
 			rd[2] = 1.0;
 			
 			// Normalize ray direction
 			normalize(rd);
 			best_t = INFINITY;
 			
-			for (index = 0; index < num_objects; index++) {
+			for(index = 0; index < num_objects; index++) {
 				t = 0;
 				
 				if(strcmp((objects[index].type), "sphere") == 0){
@@ -247,10 +247,10 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 			
 				}
 				
-				// Get the best 
+				// Get the best t value and object index
 				if ((t > 0) && (t < best_t)){
 					best_t = t;
-					best_obj = index;
+					t_object = index;
 				
 				}
 				
@@ -258,25 +258,25 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 			
 			if((best_t > 0) && (best_t != INFINITY)){
 				
-				if(strcmp(objects[best_obj].type, "sphere") == 0) {
-					red = objects[best_obj].properties.sphere.color[0] * (image->max_color);
-					image->image_data[row * image->width + column].red = red;
+				if(strcmp(objects[t_object].type, "sphere") == 0) {
+					red = objects[t_object].properties.sphere.color[0] * (image->max_color);
+					image->image_data[(image->width) * row + column].red = red;
 					
-					green = objects[best_obj].properties.sphere.color[1] * (image->max_color);
-					image->image_data[row * image->width + column].green = green;
+					green = objects[t_object].properties.sphere.color[1] * (image->max_color);
+					image->image_data[(image->width) * row + column].green = green;
 					
-					blue = objects[best_obj].properties.sphere.color[2] * (image->max_color);
-					image->image_data[row * image->width + column].blue = blue;
+					blue = objects[t_object].properties.sphere.color[2] * (image->max_color);
+					image->image_data[(image->width) * row + column].blue = blue;
 				
-				} else if(strcmp(objects[best_obj].type, "plane") == 0){
-					red = objects[best_obj].properties.plane.color[0] * (image->max_color);
-					image->image_data[row * image->width + column].red = red;
+				} else if(strcmp(objects[t_object].type, "plane") == 0){
+					red = objects[t_object].properties.plane.color[0] * (image->max_color);
+					image->image_data[(image->width) * row + column].red = red;
 					
-					green = objects[best_obj].properties.plane.color[1] * (image->max_color);
-					image->image_data[row * image->width + column].green = green;
+					green = objects[t_object].properties.plane.color[1] * (image->max_color);
+					image->image_data[(image->width) * row + column].green = green;
 					
-					blue = objects[best_obj].properties.plane.color[2] * (image->max_color);
-					image->image_data[row * image->width + column].blue = blue;				
+					blue = objects[t_object].properties.plane.color[2] * (image->max_color);
+					image->image_data[(image->width) * row + column].blue = blue;				
 				}
 				
 			}
