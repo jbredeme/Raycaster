@@ -122,10 +122,12 @@ char *get_string(FILE *fpointer){
 			token = get_char(fpointer);
 			 
 		}
+		
 	}
 	 
 	buffer[i] = 0;
-	return strdup(buffer);	 
+	return strdup(buffer);
+	
  }
  
  
@@ -224,9 +226,34 @@ double *get_vector(FILE *fpointer){
 	}		
 	
 	return vector;
+	
  }
 
+ 
+ /**
+ * color_tolerance
+ *
+ * @param color_v - an array of 3 double precsion numbers 
+ * @returns 0 if an element is not within the acceptable tolerances 0 to 1.0 and 1 otherwise
+ * @description check if color value is within the acceptable tolerances 0 to 1.0
+ */
+ int color_tolerance(double color_v[]){
+	int index;
+	 
+	for(index = 0; index < 3; index++) {
+		if((color_v[index] < 0) || (color_v[index] > 1.0)) {
+			
+			return (0);
+			
+		}
 
+	}
+	
+	return (1);
+	
+ }
+
+ 
  /**
  * json_read_scene
  *
@@ -381,16 +408,39 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 					skip_whitespace(fpointer);
 					vector = get_vector(fpointer);
 					
+					// If so multiple that color tolerance by maximum color value of 255
+					
 					if(strcmp(objects[index].type, "sphere") == 0) {
-						objects[index].properties.sphere.color[0] = vector[0];
-						objects[index].properties.sphere.color[1] = vector[1];
-						objects[index].properties.sphere.color[2] = vector[2];							
+						
+						if(color_tolerance(vector) != 1) {
+							fprintf(stderr, "Error, invalid color tolerance in sphere color vector.\n");
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);
+							
+						} else {
+							objects[index].properties.sphere.color[0] = vector[0];
+							objects[index].properties.sphere.color[1] = vector[1];
+							objects[index].properties.sphere.color[2] = vector[2];	
+							
+						}
+							
 						
 					} else if(strcmp(objects[index].type, "plane") == 0) {
-						objects[index].properties.plane.color[0] = vector[0];
-						objects[index].properties.plane.color[1] = vector[1];
-						objects[index].properties.plane.color[2] = vector[2];
 						
+						if(color_tolerance(vector) != 1) {
+							fprintf(stderr, "Error, invalid color tolerance in plane color vector.\n");
+							// Close file stream flush all buffers
+							fclose(fpointer);		
+							exit(-1);							
+							
+						} else {
+							objects[index].properties.plane.color[0] = vector[0];
+							objects[index].properties.plane.color[1] = vector[1];
+							objects[index].properties.plane.color[2] = vector[2];
+							
+						}
+		
 					}
 					
 				}				
