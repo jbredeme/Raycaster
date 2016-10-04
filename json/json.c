@@ -173,7 +173,7 @@ double *get_vector(FILE *fpointer){
 	token = get_char(fpointer);
 	
 	if(token != '[') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
+		fprintf(stderr, "Error, line number %d; error reading in vector. Unexpected character '%c', expected character '%c'.\n", line_num, token, '[');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);
@@ -188,7 +188,7 @@ double *get_vector(FILE *fpointer){
 	token = get_char(fpointer);
 	
 	if(token != ',') {
-		fprintf(stderr, "Error, line number %d; unexpected character '%c', expected character '%c'.\n", line_num, token, ',');
+		fprintf(stderr, "Error, line number %d; error reading in vector. Unexpected character '%c', expected character '%c'.\n", line_num, token, ',');
 		// Close file stream flush all buffers
 		fclose(fpointer);		
 		exit(-1);

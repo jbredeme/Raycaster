@@ -235,24 +235,30 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 			for(index = 0; index < num_objects; index++) {
 				t = 0;
 				
-				if(strcmp((objects[index].type), "sphere") == 0){
-					t = sphere_intersection(ro, rd, objects[index].properties.sphere.position, objects[index].properties.sphere.radius);
-					//printf("Best t - sphere: %lf\n", t);
-					//printf("Position: %lf %lf %lf\n\n", objects[index].properties.sphere.position[0], objects[index].properties.sphere.position[1], objects[index].properties.sphere.position[2]);
+				if((objects[index].type) != NULL) {
+					if(strcmp((objects[index].type), "sphere") == 0){
+						t = sphere_intersection(ro, rd, objects[index].properties.sphere.position, objects[index].properties.sphere.radius);
+						//printf("Best t - sphere: %lf\n", t);
+						//printf("Position: %lf %lf %lf\n\n", objects[index].properties.sphere.position[0], objects[index].properties.sphere.position[1], objects[index].properties.sphere.position[2]);
+					
+					} else if(strcmp((objects[index].type), "plane") == 0) {
+						t = plane_intersection(ro, rd, objects[index].properties.plane.position, objects[index].properties.plane.normal);
+						//printf("Best t - plane: %lf\n", t);
+						//printf("Position: %lf %lf %lf\n\n", objects[index].properties.plane.position[0], objects[index].properties.plane.position[1], objects[index].properties.plane.position[2]);
 				
-				} else if(strcmp((objects[index].type), "plane") == 0) {
-					t = plane_intersection(ro, rd, objects[index].properties.plane.position, objects[index].properties.plane.normal);
-					//printf("Best t - plane: %lf\n", t);
-					//printf("Position: %lf %lf %lf\n\n", objects[index].properties.plane.position[0], objects[index].properties.plane.position[1], objects[index].properties.plane.position[2]);
-			
+					} else {
+						// Empty or invalid object
+					}
+					
+					// Get the best t value and object index
+					if ((t > 0) && (t < best_t)){
+						best_t = t;
+						t_object = index;
+					
+					}
+					
 				}
 				
-				// Get the best t value and object index
-				if ((t > 0) && (t < best_t)){
-					best_t = t;
-					t_object = index;
-				
-				}
 				
 			} // EoObject iteration loop
 			

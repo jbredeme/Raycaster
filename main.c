@@ -22,8 +22,8 @@ int maximum_color;
 /**
  * main
  *
- * @param argc - contains the number of arguments passed to the program. 
- * @param *argv[] - a one-dimensional array of strings.
+ * @param argc - contains the number of arguments passed to the program
+ * @param argv - a one-dimensional array of strings
  * @returns 0 upon successful completion 
  * @description main function called by the operating system when the user runs the program. 
  */
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 		
 	}
 	
-	// Validate command line input
+	// Validate command line input(s)
 	if(argc != 5){
 		fprintf(stderr, "Error, incorrect usage!\nCorrect usage pattern is: raycast width height input.json output.ppm.\n");
 		exit(-1);
@@ -87,34 +87,44 @@ int main(int argc, char *argv[]){
 			// Empty Scene
 			
 		} else {
-			// Raycast scene, write out to ppm6 image
-			write_p6_image(argv[4], raycaster(objects, ppm_image, num_objects));
 			
 			// Display json objects read in, valid for camera, sphere, and plane
 			printf("\n- NUMBER OF OBJECTS: %d -\n\n", num_objects);
 			for(count = 0; count < num_objects; count++) {
-				if(strcmp(objects[count].type, "camera") == 0){
-					printf("Type: %s\n", objects[count].type);
-					printf("Width: %lf\n", objects[count].properties.camera.width);
-					printf("Height: %lf\n\n", objects[count].properties.camera.height);
-				}
 				
-				if(strcmp(objects[count].type, "sphere") == 0){
-					printf("Type: %s\n", objects[count].type);
-					printf("Radius: %lf\n", objects[count].properties.sphere.radius);
-					printf("Color: %lf %lf %lf\n", objects[count].properties.sphere.color[0], objects[count].properties.sphere.color[1], objects[count].properties.sphere.color[2]);
-					printf("Position: %lf %lf %lf\n\n", objects[count].properties.sphere.position[0], objects[count].properties.sphere.position[1], objects[count].properties.sphere.position[2]);
+				// Account for empty object data - I want to essentially skip empty objects and continue with my scene
+				if((objects[count].type) == NULL){
+					printf("Type: Empty Object\n");
+					printf("No properties discovered\n\n");
+					
+				} else {
+					if(strcmp(objects[count].type, "camera") == 0){
+						printf("Type: %s\n", objects[count].type);
+						printf("Width: %lf\n", objects[count].properties.camera.width);
+						printf("Height: %lf\n\n", objects[count].properties.camera.height);
+					}
+					
+					if(strcmp(objects[count].type, "sphere") == 0){
+						printf("Type: %s\n", objects[count].type);
+						printf("Radius: %lf\n", objects[count].properties.sphere.radius);
+						printf("Color: %lf %lf %lf\n", objects[count].properties.sphere.color[0], objects[count].properties.sphere.color[1], objects[count].properties.sphere.color[2]);
+						printf("Position: %lf %lf %lf\n\n", objects[count].properties.sphere.position[0], objects[count].properties.sphere.position[1], objects[count].properties.sphere.position[2]);
+						
+					}
+					
+					if(strcmp(objects[count].type, "plane") == 0){
+						printf("Type: %s\n", objects[count].type);
+						printf("Color: %lf %lf %lf\n", objects[count].properties.plane.color[0], objects[count].properties.plane.color[1], objects[count].properties.plane.color[2]);
+						printf("Position: %lf %lf %lf\n", objects[count].properties.plane.position[0], objects[count].properties.plane.position[1], objects[count].properties.plane.position[2]);
+						printf("Normal: %lf %lf %lf\n\n", objects[count].properties.plane.normal[0], objects[count].properties.plane.normal[1], objects[count].properties.plane.normal[2]);			
+					
+					}
 					
 				}
 				
-				if(strcmp(objects[count].type, "plane") == 0){
-					printf("Type: %s\n", objects[count].type);
-					printf("Color: %lf %lf %lf\n", objects[count].properties.plane.color[0], objects[count].properties.plane.color[1], objects[count].properties.plane.color[2]);
-					printf("Position: %lf %lf %lf\n", objects[count].properties.plane.position[0], objects[count].properties.plane.position[1], objects[count].properties.plane.position[2]);
-					printf("Normal: %lf %lf %lf\n\n", objects[count].properties.plane.normal[0], objects[count].properties.plane.normal[1], objects[count].properties.plane.normal[2]);			
-				}
-				
 			}
+			// Raycast scene, write out to ppm6 image
+			write_p6_image(argv[4], raycaster(objects, ppm_image, num_objects));
 			
 		}
 		
