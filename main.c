@@ -15,16 +15,55 @@
 #include "ppm\ppm6.h"
 #include "raycaster\raycaster.h"
 
+// Allocate object array, specifications do not support more then 128 objects in a scene
 Object objects[128];
+int maximum_color;
 
+/**
+ * main
+ *
+ * @param argc - contains the number of arguments passed to the program. 
+ * @param *argv[] - a one-dimensional array of strings.
+ * @returns 0 upon successful completion 
+ * @description main function called by the operating system when the user runs the program. 
+ */
 int main(int argc, char *argv[]){
 	FILE *fpointer;
-	int num_objects;
-	
+	int num_objects, count, index;
 	Image *ppm_image;
+	maximum_color = 255;
+	
+	// Allocate memory for Image
 	ppm_image = (Image *)malloc(sizeof(Image));
+	if(ppm_image == NULL) {
+		fprintf(stderr, "Failed to allocate memory.\n");
+		exit(-1);
+		
+	}
+	
+	// Validate command line input
+	if(argc != 5){
+		fprintf(stderr, "Error, incorrect usage!\nCorrect usage pattern is: raycast width height input.json output.ppm.\n");
+		exit(-1);
+		
+	} else {
+		// Loop through the first two inputs to check if they are integers
+		for(index = 1; index < 3; index++){
+			for(count = 0; count < strlen(argv[index]); count++) {
+				if((!(isdigit((argv[index])[count]))) && (((argv[index])[count]) != '.')){
+					fprintf(stderr, "Error, incorrect width and/or height value(s).\n");
+					exit(-1);
+					
+				}
+				
+			}
 
-	fpointer = fopen("test01_good.json", "r");
+		}		
+		
+	}
+
+	// Open json file for reading
+	fpointer = fopen(argv[3], "r");
 		
 	if(fpointer == NULL) {
 		fprintf(stderr, "Error, could not open file.\n");
@@ -33,35 +72,52 @@ int main(int argc, char *argv[]){
 		exit(-1);
 		
 	} else {
+		// Set Image properties
+		ppm_image->width = atoi(argv[1]);
+		ppm_image->height = atoi(argv[2]);
+		ppm_image->max_color = maximum_color;
+		
+		// Allocate memory size for image data
+		ppm_image->image_data = malloc(sizeof(Pixel) * ppm_image->width * ppm_image->height);
+		
+		// Read in json scene return number of objects
 		num_objects = json_read_scene(fpointer, objects);
-		write_p6_image("ppm6.ppm", raycaster(objects, ppm_image, 600, 600, num_objects));
 		
-	}
-	
-	// Check json read in
-	int i;
-	
-	for(i = 0; i < num_objects; i++) {
-		if(strcmp(objects[i].type, "camera") == 0){
-			printf("Type: %s\n", objects[i].type);
-			printf("Width: %lf\n", objects[i].properties.camera.width);
-			printf("Height: %lf\n\n", objects[i].properties.camera.height);
-		}
-		
-		if(strcmp(objects[i].type, "sphere") == 0){
-			printf("Type: %s\n", objects[i].type);
-			printf("Radius: %lf\n", objects[i].properties.sphere.radius);
-			printf("Color: %lf %lf %lf\n", objects[i].properties.sphere.color[0], objects[i].properties.sphere.color[1], objects[i].properties.sphere.color[2]);
-			printf("Position: %lf %lf %lf\n\n", objects[i].properties.sphere.position[0], objects[i].properties.sphere.position[1], objects[i].properties.sphere.position[2]);
+		if(num_objects <= 0) {
+			// Empty Scene
+			
+		} else {
+			// Raycast scene, write out to ppm6 image
+			write_p6_image(argv[4], raycaster(objects, ppm_image, num_objects));
+			
+			// Display json objects read in, valid for camera, sphere, and plane
+			printf("\n- NUMBER OF OBJECTS: %d -\n\n", num_objects);
+			for(count = 0; count < num_objects; count++) {
+				if(strcmp(objects[count].type, "camera") == 0){
+					printf("Type: %s\n", objects[count].type);
+					printf("Width: %lf\n", objects[count].properties.camera.width);
+					printf("Height: %lf\n\n", objects[count].properties.camera.height);
+				}
+				
+				if(strcmp(objects[count].type, "sphere") == 0){
+					printf("Type: %s\n", objects[count].type);
+					printf("Radius: %lf\n", objects[count].properties.sphere.radius);
+					printf("Color: %lf %lf %lf\n", objects[count].properties.sphere.color[0], objects[count].properties.sphere.color[1], objects[count].properties.sphere.color[2]);
+					printf("Position: %lf %lf %lf\n\n", objects[count].properties.sphere.position[0], objects[count].properties.sphere.position[1], objects[count].properties.sphere.position[2]);
+					
+				}
+				
+				if(strcmp(objects[count].type, "plane") == 0){
+					printf("Type: %s\n", objects[count].type);
+					printf("Color: %lf %lf %lf\n", objects[count].properties.plane.color[0], objects[count].properties.plane.color[1], objects[count].properties.plane.color[2]);
+					printf("Position: %lf %lf %lf\n", objects[count].properties.plane.position[0], objects[count].properties.plane.position[1], objects[count].properties.plane.position[2]);
+					printf("Normal: %lf %lf %lf\n\n", objects[count].properties.plane.normal[0], objects[count].properties.plane.normal[1], objects[count].properties.plane.normal[2]);			
+				}
+				
+			}
 			
 		}
 		
-		if(strcmp(objects[i].type, "plane") == 0){
-			printf("Type: %s\n", objects[i].type);
-			printf("Color: %lf %lf %lf\n", objects[i].properties.plane.color[0], objects[i].properties.plane.color[1], objects[i].properties.plane.color[2]);
-			printf("Position: %lf %lf %lf\n", objects[i].properties.plane.position[0], objects[i].properties.plane.position[1], objects[i].properties.plane.position[2]);
-			printf("Normal: %lf %lf %lf\n\n", objects[i].properties.plane.normal[0], objects[i].properties.plane.normal[1], objects[i].properties.plane.normal[2]);			
-		}
 	}
 
 	return(0);
