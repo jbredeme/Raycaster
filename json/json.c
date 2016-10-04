@@ -408,10 +408,10 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 					skip_whitespace(fpointer);
 					vector = get_vector(fpointer);
 					
-					// If so multiple that color tolerance by maximum color value of 255
+					
 					
 					if(strcmp(objects[index].type, "sphere") == 0) {
-						
+						// Check color tolerance range of 0 to 1.0
 						if(color_tolerance(vector) != 1) {
 							fprintf(stderr, "Error, invalid color tolerance in sphere color array.\n");
 							// Close file stream flush all buffers
@@ -427,7 +427,7 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 							
 						
 					} else if(strcmp(objects[index].type, "plane") == 0) {
-						
+						// Check color tolerance range of 0 to 1.0
 						if(color_tolerance(vector) != 1) {
 							fprintf(stderr, "Error, invalid color tolerance in plane color array.\n");
 							// Close file stream flush all buffers
