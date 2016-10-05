@@ -15,6 +15,7 @@
 // Line number for error checking purposes
 int line_num;
 
+
 /**
  * get_char
  *
