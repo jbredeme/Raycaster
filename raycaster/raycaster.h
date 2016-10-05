@@ -6,9 +6,10 @@
  * Copyright © 2016 All rights reserved 
  */
  
-#ifndef _raycaster_h
-#define _raycaster_h
+#ifndef raycaster_h
+#define raycaster_h
 
+// function declarations
 Image* raycaster(Object objects[], Image *image, int num_objects);
  
 #endif

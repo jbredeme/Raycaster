@@ -11,7 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "..\ppm\ppm6.h"
+#include "..\ppm\ppm.h"
 #include "..\json\json.h"
 #include "raycaster.h"
 
@@ -105,13 +105,6 @@ double sphere_intersection(double *ro, double *rd, double *center, double radius
 	t1 = (-1 * b + sqrt(sqr(b) - 4 * a * c)) / (2 * a);
 	t0 = (-1 * b - sqrt(sqr(b) - 4 * a * c)) / (2 * a);
 	
-	//printf("Ray Direction [%lf, %lf, %lf]\n", rd[0], rd[1], rd[2]);
-	//printf("Ray Orgin [%lf, %lf, %lf]\n", ro[0], ro[1], ro[2]);
-	//printf("Center [%lf, %lf, %lf]\n", center[0], center[1], center[2]);
-	//printf("Radius %lf\n", radius);
-	//printf("This is A: %lf\n", a);
-	//printf("This is T1: %lf\n", t1);
-	//printf("This is T0: %lf\n", t0);
 	if(t0 >= 0){
 		return t0;
 		
