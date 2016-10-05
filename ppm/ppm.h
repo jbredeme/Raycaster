@@ -2,12 +2,12 @@
  * Author: Jarid Bredemeier
  * Email: jpb64@nau.edu
  * Date: Tuesday, September 20, 2016
- * File: ppm6.h
+ * File: ppm.h
  * Copyright © 2016 All rights reserved
  */
  
-#ifndef ppm6_h
-#define ppm6_h
+#ifndef ppm_h
+#define ppm_h
 
 /**
  * Pixel
