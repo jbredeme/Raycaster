@@ -173,7 +173,7 @@ void read_image(char *filename, Image *image) {
 }
 
 
- /**
+/**
  * write_p6_image
  *
  * @param filename - string pointer that represents a file name
@@ -210,7 +210,7 @@ void write_p6_image(char *filename, Image *image) {
 }
 
 
-  /**
+/**
  * write_p3_image
  *
  * @param filename - string pointer that represents a file name

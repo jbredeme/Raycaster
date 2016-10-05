@@ -231,7 +231,7 @@ double *get_vector(FILE *fpointer){
  }
 
  
- /**
+/**
  * color_tolerance
  *
  * @param color_v - an array of 3 double precsion numbers 
@@ -255,7 +255,7 @@ double *get_vector(FILE *fpointer){
  }
 
  
- /**
+/**
  * json_read_scene
  *
  * @param file pointer
