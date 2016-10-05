@@ -19,7 +19,6 @@
 Object objects[128];
 int maximum_color;
 
-
 /**
  * main
  *
