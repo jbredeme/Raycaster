@@ -12,12 +12,13 @@
 #include <ctype.h>
 #include <math.h>
 #include "json\json.h"
-#include "ppm\ppm6.h"
+#include "ppm\ppm.h"
 #include "raycaster\raycaster.h"
 
 // Allocate object array, specifications do not support more then 128 objects in a scene
 Object objects[128];
 int maximum_color;
+
 
 /**
  * main
