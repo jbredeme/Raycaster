@@ -4,8 +4,8 @@
 # File: Makefile.mak
 # Copyright © 2016 All rights reserved 
 
-all: main.o json.o ppm6.o raycaster.o
-	gcc main.o json.o ppm6.o raycaster.o -o raycast
+all: main.o json.o ppm.o raycaster.o
+	gcc main.o json.o ppm.o raycaster.o -o raycast
 	
 main.o: main.c
 	gcc -c main.c
@@ -13,8 +13,8 @@ main.o: main.c
 json.o: json\json.c json\json.h
 	gcc -c json\json.c
 	
-ppm6.o: ppm\ppm6.c ppm\ppm6.h
-	gcc -c ppm\ppm6.c
+ppm.o: ppm\ppm.c ppm\ppm.h
+	gcc -c ppm\ppm.c
 
 raycaster.o: raycaster\raycaster.c raycaster\raycaster.h
 	gcc -c raycaster\raycaster.c	
