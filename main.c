@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 			printf("\n- NUMBER OF OBJECTS: %d -\n\n", num_objects);
 			for(count = 0; count < num_objects; count++) {
 				
-				// Account for empty object data - I want to essentially skip empty objects and continue with my scene
+				// Account for empty object data
 				if((objects[count].type) == NULL){
 					printf("Type: Empty Object\n");
 					printf("No properties discovered\n\n");

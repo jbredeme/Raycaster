@@ -164,7 +164,6 @@ double plane_intersection(double *ro, double *rd, double *pos, double *normal){
  * @param objects[] - collection of objects read in from the json parser
  * @param image - is an Image object used to store image data
  * @param num_objects - number of objects read in from the json parser use to set
- * @param maximum_color - maximum color value
  * iteration values for, for loops.
  * @returns Image - which is the image pointer to the image object that is used to store
  * the image data for write purposes.
@@ -206,11 +205,6 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 		pixel_height = h / (image->height);
 		pixel_width = w / (image->width);
 		
-		//printf("index: %d\n", index);
-		//printf("h: %lf\n", h);
-		//printf("w: %lf\n", w);
-		//printf("Pixel height: %lf\n", pixel_height);
-		//printf("Pixel width: %lf\n", pixel_width);		
 	}
 
 	for(row = 0; row < (image->height); row++) {
@@ -239,8 +233,6 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 						//printf("Best t - plane: %lf\n", t);
 						//printf("Position: %lf %lf %lf\n\n", objects[index].properties.plane.position[0], objects[index].properties.plane.position[1], objects[index].properties.plane.position[2]);
 				
-					} else {
-						// Empty or invalid object
 					}
 					
 					// Get the best t value and object index
@@ -275,7 +267,8 @@ Image* raycaster(Object objects[], Image *image, int num_objects) {
 					image->image_data[(image->width) * row + column].green = green;
 					
 					blue = objects[t_object].properties.plane.color[2] * (image->max_color);
-					image->image_data[(image->width) * row + column].blue = blue;				
+					image->image_data[(image->width) * row + column].blue = blue;
+					
 				}
 				
 			}

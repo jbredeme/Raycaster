@@ -259,7 +259,6 @@ void write_p3_image(char *filename, Image *image) {
 		// Close file stream flush all buffers
 		fclose(fpointer);
 		
-		
 	}
 	
 }
