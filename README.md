@@ -29,6 +29,9 @@ raycast width height input.json output.ppm
  }
 ]
 ```
+## Example Screenshot
+<img src="https://github.com/jbredeme/Raycaster/blob/master/example/png/example02.png" width="256"> 
+
 ## Resources
 
 * Scratchapixel [Ray-Plane Intersection] 
