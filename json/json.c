@@ -408,41 +408,44 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 					skip_whitespace(fpointer);
 					vector = get_vector(fpointer);
 					
-					
-					
-					if(strcmp(objects[index].type, "sphere") == 0) {
-						// Check color tolerance range of 0 to 1.0
-						if(color_tolerance(vector) != 1) {
-							fprintf(stderr, "Error, invalid color tolerance in sphere color array.\n");
-							// Close file stream flush all buffers
-							fclose(fpointer);		
-							exit(-1);
+					// Validates against object defintions without a type defined. That is all 
+					// objects and object properties associated to a type value of NULL are ignored
+					if(objects[index].type != NULL) {
+						if(strcmp(objects[index].type, "sphere") == 0) {
+							// Check color tolerance range of 0 to 1.0
+							if(color_tolerance(vector) != 1) {
+								fprintf(stderr, "Error, invalid color tolerance in sphere color array.\n");
+								// Close file stream flush all buffers
+								fclose(fpointer);		
+								exit(-1);
+								
+							} else {
+								objects[index].properties.sphere.color[0] = vector[0];
+								objects[index].properties.sphere.color[1] = vector[1];
+								objects[index].properties.sphere.color[2] = vector[2];	
+								
+							}
+								
 							
-						} else {
-							objects[index].properties.sphere.color[0] = vector[0];
-							objects[index].properties.sphere.color[1] = vector[1];
-							objects[index].properties.sphere.color[2] = vector[2];	
-							
+						} else if(strcmp(objects[index].type, "plane") == 0) {
+							// Check color tolerance range of 0 to 1.0
+							if(color_tolerance(vector) != 1) {
+								fprintf(stderr, "Error, invalid color tolerance in plane color array.\n");
+								// Close file stream flush all buffers
+								fclose(fpointer);		
+								exit(-1);							
+								
+							} else {
+								objects[index].properties.plane.color[0] = vector[0];
+								objects[index].properties.plane.color[1] = vector[1];
+								objects[index].properties.plane.color[2] = vector[2];
+								
+							}
+			
 						}
-							
 						
-					} else if(strcmp(objects[index].type, "plane") == 0) {
-						// Check color tolerance range of 0 to 1.0
-						if(color_tolerance(vector) != 1) {
-							fprintf(stderr, "Error, invalid color tolerance in plane color array.\n");
-							// Close file stream flush all buffers
-							fclose(fpointer);		
-							exit(-1);							
-							
-						} else {
-							objects[index].properties.plane.color[0] = vector[0];
-							objects[index].properties.plane.color[1] = vector[1];
-							objects[index].properties.plane.color[2] = vector[2];
-							
-						}
-		
 					}
-					
+			
 				}				
 				
 			} else if(strcmp(name, "position") == 0) {
@@ -460,17 +463,22 @@ int json_read_scene(FILE *fpointer, Object objects[]) {
 					skip_whitespace(fpointer);
 					vector = get_vector(fpointer);
 					
-					if(strcmp(objects[index].type, "sphere") == 0) {
-						objects[index].properties.sphere.position[0] = vector[0];
-						objects[index].properties.sphere.position[1] = vector[1];
-						objects[index].properties.sphere.position[2] = vector[2];					
+					// Validates against object defintions without a type defined. That is all 
+					// objects and object properties associated to a type value of NULL are ignored
+					if(objects[index].type != NULL){
+						if(strcmp(objects[index].type, "sphere") == 0) {
+							objects[index].properties.sphere.position[0] = vector[0];
+							objects[index].properties.sphere.position[1] = vector[1];
+							objects[index].properties.sphere.position[2] = vector[2];					
+							
+						} else if(strcmp(objects[index].type, "plane") == 0) {
+							objects[index].properties.plane.position[0] = vector[0];
+							objects[index].properties.plane.position[1] = vector[1];
+							objects[index].properties.plane.position[2] = vector[2];
+							
+						}
 						
-					} else if(strcmp(objects[index].type, "plane") == 0) {
-						objects[index].properties.plane.position[0] = vector[0];
-						objects[index].properties.plane.position[1] = vector[1];
-						objects[index].properties.plane.position[2] = vector[2];
-						
-					}	
+					}
 					
 				}				
 				
