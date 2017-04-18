@@ -32,9 +32,16 @@ raycast width height input.json output.ppm
  }
 ]
 ```
+## Built With
+* [Cygwin](https://cygwin.com/index.html) - 64-bit versions of Windows
+* gcc (GCC) 5.4.0
+* Windows 10 Professional
+
+## Author
+* **Jarid Bredemeier** - *Initial work*
 
 ## Resources
-* Scratchapixel [Ray-Plane Intersection] 
+* [Ray-Plane Intersection] - Scratchapixel
 * A. Glassner, etal., [An Introduction to Ray Tracing], Academic Press, 1989.
 
 [An Introduction to Ray Tracing]: http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter0.htm
